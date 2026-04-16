@@ -19,9 +19,6 @@ services:
     healthCheckPath: /
     envVars:
       - key: PREDICT_API_URL
-        fromService:
-          type: web
-          name: website-demo-api
-          envVarKey: RENDER_EXTERNAL_URL
+        value: https://website-demo-api.onrender.com/predict
       - key: PREDICT_API_PATH
         value: /predict
