@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.*;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.StringUtils;
 import java.util.*;
 
 @Controller
@@ -12,6 +13,15 @@ public class HomeCotroller {   // matches file name
 
     @Value("${prediction.api.url}")
     private String predictionApiUrl;
+
+    @Value("${prediction.api.host}")
+    private String predictionApiHost;
+
+    @Value("${prediction.api.port}")
+    private String predictionApiPort;
+
+    @Value("${prediction.api.path}")
+    private String predictionApiPath;
 
     @RequestMapping("/")
     public String home() {
@@ -49,11 +59,19 @@ public class HomeCotroller {   // matches file name
 
         // Call Flask API
         ResponseEntity<Map> response =
-                restTemplate.postForEntity(predictionApiUrl, entity, Map.class);
+                restTemplate.postForEntity(getPredictionApiUrl(), entity, Map.class);
 
         // Send result to JSP
         model.addAttribute("result", response.getBody().get("result"));
 
         return "index";
+    }
+
+    private String getPredictionApiUrl() {
+        if (StringUtils.hasText(predictionApiUrl)) {
+            return predictionApiUrl;
+        }
+
+        return "http://" + predictionApiHost + ":" + predictionApiPort + predictionApiPath;
     }
 }

@@ -10,6 +10,8 @@ Spring Boot web app with a JSP frontend for predicting semiconductor threshold v
 - Maven
 - Docker
 - Render
+- Python Flask
+- scikit-learn/joblib models
 
 ## Project Structure
 
@@ -24,6 +26,12 @@ src/main/resources/
 
 src/main/webapp/
   index.jsp
+
+flask-api/
+  app.py
+  model.pkl
+  3_model.pkl
+  requirements.txt
 ```
 
 ## Run Locally
@@ -40,7 +48,7 @@ Open:
 http://localhost:8080
 ```
 
-By default, prediction requests are sent to:
+By default, prediction requests are sent to the local Flask API:
 
 ```text
 http://localhost:5000/predict
@@ -79,17 +87,26 @@ Steps:
 2. In Render, choose **New > Blueprint**.
 3. Connect the GitHub repository.
 4. Render will detect `render.yaml`.
-5. Set the environment variable:
+5. Render will create both services:
 
 ```text
-PREDICT_API_URL=https://your-flask-api-service.onrender.com/predict
+website-demo-api
+website-demo
 ```
 
-6. Deploy.
+6. Deploy the Blueprint.
+
+The Spring Boot website connects to the Flask API through Render internal service variables:
+
+```text
+PREDICT_API_HOST
+PREDICT_API_PORT
+PREDICT_API_PATH
+```
 
 ## Deploy Flask API
 
-The Flask API code is not included in this repository yet. The website expects the Flask service to provide this endpoint:
+The Flask API is included in `flask-api/`. It provides this endpoint:
 
 ```text
 POST /predict
@@ -124,7 +141,13 @@ Expected JSON response:
 }
 ```
 
-After deploying the Flask API, copy its Render URL and use it as `PREDICT_API_URL` for the Spring Boot website.
+Render runs the API with:
+
+```text
+gunicorn app:app
+```
+
+If the API deployment fails while loading the `.pkl` models, check the Render logs. Pickle files can require the same scikit-learn version that was used when the models were created.
 
 ## GitHub Upload
 

@@ -1,10 +1,29 @@
 services:
   - type: web
+    name: website-demo-api
+    runtime: python
+    plan: free
+    rootDir: flask-api
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app
+    healthCheckPath: /
+
+  - type: web
     name: website-demo
     runtime: docker
     plan: free
     dockerfilePath: ./Dockerfile
     healthCheckPath: /
     envVars:
-      - key: PREDICT_API_URL
-        sync: false
+      - key: PREDICT_API_HOST
+        fromService:
+          type: web
+          name: website-demo-api
+          property: host
+      - key: PREDICT_API_PORT
+        fromService:
+          type: web
+          name: website-demo-api
+          property: port
+      - key: PREDICT_API_PATH
+        value: /predict
