@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: website-demo
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    envVars:
+      - key: PREDICT_API_URL
+        sync: false
