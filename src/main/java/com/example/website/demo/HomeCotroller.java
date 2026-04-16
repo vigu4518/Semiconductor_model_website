@@ -69,7 +69,11 @@ public class HomeCotroller {   // matches file name
 
     private String getPredictionApiUrl() {
         if (StringUtils.hasText(predictionApiUrl)) {
-            return predictionApiUrl;
+            String trimmedUrl = predictionApiUrl.replaceAll("/+$", "");
+            if (trimmedUrl.endsWith(predictionApiPath)) {
+                return trimmedUrl;
+            }
+            return trimmedUrl + predictionApiPath;
         }
 
         return "http://" + predictionApiHost + ":" + predictionApiPort + predictionApiPath;

@@ -96,11 +96,10 @@ website-demo
 
 6. Deploy the Blueprint.
 
-The Spring Boot website connects to the Flask API through Render internal service variables:
+The Spring Boot website connects to the Flask API through Render service variables:
 
 ```text
-PREDICT_API_HOST
-PREDICT_API_PORT
+PREDICT_API_URL
 PREDICT_API_PATH
 ```
 
